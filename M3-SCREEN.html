@@ -1,0 +1,891 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b12">
+<title>M3-SCREEN | Movie Intelligence</title>
+
+<style>
+:root {
+  --bg: #090b12;
+  --panel: #131824;
+  --panel2: #1a2230;
+  --red: #e50926;
+  --text: #f4f5f8;
+  --muted: #9aa4b5;
+  --border: #273142;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  background: linear-gradient(120deg,#090b12,#161b27,#240b14);
+  padding: 22px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.logo {
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.logo span {
+  color: var(--red);
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.top-controls {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+input, select {
+  background: var(--panel);
+  color: white;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 12px;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--red);
+}
+
+#search {
+  flex: 1;
+  min-width: 180px;
+}
+
+button {
+  border: none;
+  padding: 11px 15px;
+  border-radius: 8px;
+  color: white;
+  background: var(--red);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  filter: brightness(1.15);
+}
+
+button.secondary {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+nav {
+  display: flex;
+  overflow-x: auto;
+  gap: 9px;
+  padding: 14px 18px;
+  background: #0d111a;
+  border-bottom: 1px solid var(--border);
+}
+
+nav button {
+  white-space: nowrap;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+
+nav button.active {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px 16px 70px;
+}
+
+.hero {
+  border: 1px solid #33202b;
+  border-radius: 14px;
+  padding: 22px;
+  background: linear-gradient(135deg,#20121c,#111723 70%,#190b10);
+  margin-bottom: 23px;
+}
+
+.hero h1 {
+  font-size: 25px;
+  margin: 0 0 10px;
+}
+
+.hero p {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.stat {
+  background: var(--panel);
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.stat strong {
+  display: block;
+  font-size: 22px;
+  color: var(--red);
+}
+
+.stat small {
+  color: var(--muted);
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 28px 0 16px;
+}
+
+.section-title h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.section-title small {
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 13px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+  background: #1b202b;
+}
+
+.poster-wrap {
+  position: relative;
+  cursor: pointer;
+}
+
+.rating {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  background: #090b12e8;
+  padding: 6px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.card-content {
+  padding: 11px;
+}
+
+.card h3 {
+  font-size: 14px;
+  margin: 0 0 7px;
+  line-height: 1.4;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.card-actions {
+  display: flex;
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.card-actions button {
+  padding: 9px;
+  flex: 1;
+  font-size: 11px;
+}
+
+.empty, .status {
+  text-align: center;
+  padding: 35px 15px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.error {
+  color: #ff7979;
+}
+
+#watchlistGrid {
+  display: none;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: #000d;
+  z-index: 999;
+  display: none;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.modal-box {
+  max-width: 600px;
+  margin: 30px auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.modal-banner {
+  height: 230px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.modal-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg,var(--panel),transparent);
+}
+
+.modal-body {
+  padding: 18px;
+}
+
+.modal-body h2 {
+  margin-top: 0;
+}
+
+.modal-body p {
+  color: #b8c0cd;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.close {
+  float: right;
+  background: #333;
+  padding: 8px 13px;
+  position: relative;
+  z-index: 2;
+  margin: 10px;
+}
+
+.api-box {
+  background: #0e131d;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px;
+  margin-top: 16px;
+}
+
+.api-box input {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.api-box small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+@media(min-width:650px) {
+  .grid {
+    grid-template-columns: repeat(4,minmax(0,1fr));
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  header {
+    padding: 30px;
+  }
+}
+
+@media(min-width:1000px) {
+  .grid {
+    grid-template-columns: repeat(5,minmax(0,1fr));
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">M3<span>-SCREEN</span></div>
+    <div class="tagline">YOUR CINEMA INTELLIGENCE CENTER</div>
+
+    <div class="top-controls">
+      <input id="search" type="search" placeholder="Search movies or series...">
+      <button onclick="searchTitles()">SEARCH</button>
+      <button class="secondary" onclick="refreshAll()">↻ REFRESH</button>
+      <button class="secondary" onclick="openSettings()">⚙ API</button>
+    </div>
+  </div>
+</header>
+
+<nav id="navigation">
+  <button class="active" onclick="changeTab('all',this)">ALL UPDATES</button>
+  <button onclick="changeTab('movie',this)">MOVIES</button>
+  <button onclick="changeTab('tv',this)">SERIES</button>
+  <button onclick="changeTab('horror',this)">HORROR</button>
+  <button onclick="changeTab('supernatural',this)">SUPERNATURAL</button>
+  <button onclick="changeTab('action',this)">ACTION</button>
+  <button onclick="changeTab('scifi',this)">SCI-FI</button>
+  <button onclick="changeTab('watchlist',this)">MY WATCHLIST ★</button>
+</nav>
+
+<main>
+
+  <section class="hero">
+    <h1>Enter the world of <span style="color:#e50926">M3-SCREEN</span></h1>
+    <p>
+      Discover new movies, upcoming releases, newly aired episodes,
+      fresh seasons, horror, supernatural worlds, action and science fiction.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <strong id="movieCount">0</strong>
+        <small>Movies</small>
+      </div>
+      <div class="stat">
+        <strong id="seriesCount">0</strong>
+        <small>Series</small>
+      </div>
+      <div class="stat">
+        <strong id="watchCount">0</strong>
+        <small>Saved</small>
+      </div>
+    </div>
+  </section>
+
+  <div id="status" class="status">Enter your TMDB API key to begin.</div>
+
+  <div class="section-title">
+    <h2 id="sectionHeading">Latest Releases & Updates</h2>
+    <small id="updateTime"></small>
+  </div>
+
+  <div class="grid" id="movieGrid"></div>
+
+  <div class="empty" id="emptyMessage" style="display:none">
+    No titles found. Try another category or search.
+  </div>
+
+</main>
+
+<footer>
+  M3-SCREEN · MOVIE & SERIES INTELLIGENCE<br>
+  Powered by TMDB
+</footer>
+
+<!-- Details modal -->
+<div class="modal" id="detailModal" onclick="outsideClose(event)">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div id="modalBanner" class="modal-banner"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- API settings -->
+<div class="modal" id="settingsModal" onclick="settingsOutside(event)">
+  <div class="modal-box">
+    <div class="modal-body">
+      <button class="close" onclick="closeSettings()">✕</button>
+      <h2>API Settings</h2>
+      <p>Connect M3-SCREEN to TMDB to retrieve movie and series information.</p>
+
+      <div class="api-box">
+        <input id="apiKeyInput" type="password" placeholder="Paste your TMDB API key here">
+        <button onclick="saveKey()" style="width:100%">SAVE API KEY</button>
+        <br><br>
+        <small>
+          Your API key is stored only in this browser on this device.
+          You can remove it at any time by clearing it here.
+        </small>
+      </div>
+
+      <p>
+        <a href="https://www.themoviedb.org/settings/api"
+           target="_blank" style="color:#ff515d">
+          Get a TMDB API key ↗
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = "https://api.themoviedb.org/3";
+const IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
+const BACKDROP_BASE = "https://image.tmdb.org/t/p/w1280";
+
+let apiKey = localStorage.getItem("m3_tmdb_key") || "";
+let allItems = [];
+let watchlist = JSON.parse(localStorage.getItem("m3_watchlist") || "[]");
+let activeTab = "all";
+let currentModalItem = null;
+let loading = false;
+
+const $ = id => document.getElementById(id);
+
+function escapeHTML(value) {
+  return String(value || "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
+}
+
+function apiUrl(path, params={}) {
+  const query = new URLSearchParams({
+    api_key: apiKey,
+    language: "en-US",
+    ...params
+  });
+  return API_BASE + path + "?" + query.toString();
+}
+
+async function apiFetch(path, params={}) {
+  const response = await fetch(apiUrl(path,params));
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("Invalid API key. Please check your TMDB API key in Settings.");
+    }
+    throw new Error("TMDB request failed (" + response.status + ")");
+  }
+  return response.json();
+}
+
+function getTitle(item) {
+  return item.title || item.name || "Untitled";
+}
+
+function getDate(item) {
+  return item.release_date || item.first_air_date || "";
+}
+
+function getType(item) {
+  return item.media_type || (item.title ? "movie" : "tv");
+}
+
+function poster(item) {
+  return item.poster_path ? IMAGE_BASE + item.poster_path : "";
+}
+
+function dateLabel(date) {
+  if (!date) return "Release date unknown";
+  return date;
+}
+
+async function refreshAll() {
+  if (!apiKey) {
+    openSettings();
+    return;
+  }
+
+  if (loading) return;
+  loading = true;
+
+  $("status").className = "status";
+  $("status").textContent = "Scanning the cinema universe...";
+  $("movieGrid").innerHTML = "";
+  $("emptyMessage").style.display = "none";
+
+  try {
+    const today = new Date().toISOString().slice(0,10);
+
+    const tasks = [
+      apiFetch("/movie/now_playing",{region:"US"}),
+      apiFetch("/movie/upcoming",{region:"US"}),
+      apiFetch("/discover/movie",{
+        with_genres:"27,28,878",
+        sort_by:"release_date.desc",
+        "release_date.lte":today
+      }),
+      apiFetch("/discover/tv",{
+        with_genres:"10759,10765,9648",
+        sort_by:"first_air_date.desc",
+        "first_air_date.lte":today
+      }),
+      apiFetch("/discover/tv",{
+        sort_by:"first_air_date.desc",
+        "first_air_date.gte":today
+      }),
+      apiFetch("/discover/movie",{
+        sort_by:"release_date.asc",
+        "release_date.gte":today
+      })
+    ];
+
+    const results = await Promise.all(tasks);
+
+    let combined = [];
+
+    results.forEach((result,index) => {
+      const type = (index === 3 || index === 4) ? "tv" : "movie";
+      (result.results || []).forEach(item => {
+        item.media_type = type;
+        combined.push(item);
+      });
+    });
+
+    // Remove duplicate titles
+    const unique = new Map();
+    combined.forEach(item => {
+      const key = getType(item) + "-" + item.id;
+      if (!unique.has(key)) unique.set(key,item);
+    });
+
+    allItems = [...unique.values()];
+    allItems.sort((a,b) => (b.popularity || 0) - (a.popularity || 0));
+
+    $("status").textContent = "Database updated successfully.";
+    $("status").className = "status";
+    $("updateTime").textContent = "Updated " + new Date().toLocaleTimeString();
+    render();
+  } catch (error) {
+    $("status").className = "status error";
+    $("status").textContent = error.message + " — Check your internet or API settings.";
+  }
+
+  loading = false;
+}
+
+function changeTab(tab,button) {
+  activeTab = tab;
+
+  document.querySelectorAll("#navigation button").forEach(b => {
+    b.classList.remove("active");
+  });
+  if (button) button.classList.add("active");
+
+  const headings = {
+    all:"Latest Releases & Updates",
+    movie:"Movies",
+    tv:"Series & Seasons",
+    horror:"Horror",
+    supernatural:"Supernatural",
+    action:"Action",
+    scifi:"Science Fiction",
+    watchlist:"My Watchlist"
+  };
+
+  $("sectionHeading").textContent = headings[tab] || "M3-SCREEN";
+  $("search").value = "";
+  render();
+}
+
+function render() {
+  let items = [...allItems];
+
+  if (activeTab === "movie") {
+    items = items.filter(i => getType(i) === "movie");
+  }
+
+  if (activeTab === "tv") {
+    items = items.filter(i => getType(i) === "tv");
+  }
+
+  if (activeTab === "horror") {
+    items = items.filter(i => (i.genre_ids || []).includes(27) ||
+                             (i.genre_ids || []).includes(9648));
+  }
+
+  if (activeTab === "action") {
+    items = items.filter(i => (i.genre_ids || []).includes(28) ||
+                             (i.genre_ids || []).includes(10759));
+  }
+
+  if (activeTab === "scifi") {
+    items = items.filter(i => (i.genre_ids || []).includes(878) ||
+                             (i.genre_ids || []).includes(10765));
+  }
+
+  if (activeTab === "supernatural") {
+    items = items.filter(i => (i.genre_ids || []).includes(9648) ||
+                             (i.genre_ids || []).includes(10765));
+  }
+
+  if (activeTab === "watchlist") {
+    items = watchlist;
+  }
+
+  $("movieCount").textContent = allItems.filter(i => getType(i) === "movie").length;
+  $("seriesCount").textContent = allItems.filter(i => getType(i) === "tv").length;
+  $("watchCount").textContent = watchlist.length;
+
+  const grid = $("movieGrid");
+  grid.innerHTML = "";
+
+  items.forEach(item => {
+    grid.appendChild(makeCard(item));
+  });
+
+  $("emptyMessage").style.display = items.length ? "none" : "block";
+}
+
+function makeCard(item) {
+  const div = document.createElement("div");
+  div.className = "card";
+
+  const image = poster(item);
+  const rating = Number(item.vote_average || 0).toFixed(1);
+  const type = getType(item);
+  const saved = watchlist.some(w => w.id === item.id && getType(w) === type);
+
+  div.innerHTML = `
+    <div class="poster-wrap" onclick="openDetails(${item.id},'${type}')">
+      <img class="poster"
+           src="${image || ""}"
+           alt="${escapeHTML(getTitle(item))}"
+           loading="lazy"
+           onerror="this.style.display='none'">
+      <div class="rating">★ ${rating}</div>
+    </div>
+    <div class="card-content">
+      <h3>${escapeHTML(getTitle(item))}</h3>
+      <div class="meta">
+        ${type === "movie" ? "MOVIE" : "SERIES"}<br>
+        ${escapeHTML(dateLabel(getDate(item)))}
+      </div>
+      <div class="card-actions">
+        <button onclick="openDetails(${item.id},'${type}')">DETAILS</button>
+        <button class="secondary" onclick="toggleWatch(${item.id},'${type}')">
+          ${saved ? "★ SAVED" : "+ SAVE"}
+        </button>
+      </div>
+    </div>
+  `;
+
+  return div;
+}
+
+function toggleWatch(id,type) {
+  const item = allItems.find(i => i.id === id && getType(i) === type)
+    || watchlist.find(i => i.id === id && getType(i) === type);
+
+  if (!item) return;
+
+  const index = watchlist.findIndex(w => w.id === id && getType(w) === type);
+
+  if (index >= 0) {
+    watchlist.splice(index,1);
+  } else {
+    watchlist.push(item);
+  }
+
+  localStorage.setItem("m3_watchlist",JSON.stringify(watchlist));
+  render();
+}
+
+async function openDetails(id,type) {
+  if (!apiKey) {
+    openSettings();
+    return;
+  }
+
+  const modal = $("detailModal");
+  const body = $("modalBody");
+  const banner = $("modalBanner");
+
+  modal.style.display = "block";
+  body.innerHTML = "<p>Loading title details...</p>";
+  banner.style.backgroundImage = "";
+
+  try {
+    const item = await apiFetch("/" + type + "/" + id,{
+      append_to_response:"credits,videos"
+    });
+
+    currentModalItem = item;
+    const title = getTitle(item);
+    const saved = watchlist.some(w => w.id === id && getType(w) === type);
+
+    banner.style.backgroundImage = item.backdrop_path
+      ? "url('" + BACKDROP_BASE + item.backdrop_path + "')"
+      : "";
+
+    let genres = (item.genres || []).map(g => g.name).join(", ");
+    let seasons = type === "tv" ? `
+      <p><b>Seasons:</b> ${item.number_of_seasons || "Unknown"}</p>
+      <p><b>Episodes:</b> ${item.number_of_episodes || "Unknown"}</p>
+      <p><b>Latest season:</b> ${item.last_episode_to_air ? "Season " + item.last_episode_to_air.season_number + " · Episode " + item.last_episode_to_air.episode_number + " · " + (item.last_episode_to_air.air_date || "") : "Not available"}</p>
+      <p><b>Next episode:</b> ${item.next_episode_to_air ? "Season " + item.next_episode_to_air.season_number + " · Episode " + item.next_episode_to_air.episode_number + " · " + (item.next_episode_to_air.air_date || "") : "Not announced"}</p>
+    ` : "";
+
+    body.innerHTML = `
+      <h2>${escapeHTML(title)}</h2>
+      <p>
+        ★ ${Number(item.vote_average || 0).toFixed(1)}
+        &nbsp; | &nbsp;
+        ${type === "movie" ? "MOVIE" : "TV SERIES"}
+      </p>
+      <p><b>Release / First air:</b> ${escapeHTML(getDate(item) || "Unknown")}</p>
+      <p><b>Genres:</b> ${escapeHTML(genres || "Unknown")}</p>
+      ${seasons}
+      <p>${escapeHTML(item.overview || "No description available.")}</p>
+      <button onclick="toggleWatch(${id},'${type}');openDetails(${id},'${type}')">
+        ${saved ? "REMOVE FROM WATCHLIST" : "ADD TO WATCHLIST ★"}
+      </button>
+    `;
+  } catch (e) {
+    body.innerHTML = "<p class='error'>" + escapeHTML(e.message) + "</p>";
+  }
+}
+
+function closeModal() {
+  $("detailModal").style.display = "none";
+}
+
+function outsideClose(e) {
+  if (e.target.id === "detailModal") closeModal();
+}
+
+function openSettings() {
+  $("settingsModal").style.display = "block";
+  $("apiKeyInput").value = apiKey;
+}
+
+function closeSettings() {
+  $("settingsModal").style.display = "none";
+}
+
+function settingsOutside(e) {
+  if (e.target.id === "settingsModal") closeSettings();
+}
+
+function saveKey() {
+  const value = $("apiKeyInput").value.trim();
+
+  if (!value) {
+    alert("Please enter your TMDB API key.");
+    return;
+  }
+
+  apiKey = value;
+  localStorage.setItem("m3_tmdb_key",apiKey);
+  closeSettings();
+  refreshAll();
+}
+
+async function searchTitles() {
+  const query = $("search").value.trim();
+  if (!query) {
+    render();
+    return;
+  }
+
+  if (!apiKey) {
+    openSettings();
+    return;
+  }
+
+  $("status").textContent = "Searching...";
+  $("movieGrid").innerHTML = "";
+
+  try {
+    const result = await apiFetch("/search/multi",{query});
+    const items = (result.results || []).filter(i =>
+      i.media_type === "movie" || i.media_type === "tv"
+    );
+
+    const grid = $("movieGrid");
+    items.forEach(i => grid.appendChild(makeCard(i)));
+
+    $("emptyMessage").style.display = items.length ? "none" : "block";
+    $("status").textContent = "Search completed: " + items.length + " results.";
+    $("sectionHeading").textContent = "Search Results";
+  } catch(e) {
+    $("status").className = "status error";
+    $("status").textContent = e.message;
+  }
+}
+
+$("search").addEventListener("keydown",function(e) {
+  if (e.key === "Enter") searchTitles();
+});
+
+// Initial load
+if (apiKey) {
+  refreshAll();
+} else {
+  openSettings();
+  render();
+}
+</script>
+</body>
+</html>
